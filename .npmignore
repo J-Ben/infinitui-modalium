@@ -3,3 +3,4 @@ tsconfig.json
 .gitignore
 *.test.*
 __tests__/
+.git/
