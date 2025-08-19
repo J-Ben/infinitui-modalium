@@ -1,5 +1,5 @@
 {
-  "name": "@ton-org/modalium", 
+  "name": "@infinitui/modalium", 
   "version": "1.0.0",
   "description": "A customizable modal component for React Native applications with animations and blur effects",
   "main": "lib/index.js",
