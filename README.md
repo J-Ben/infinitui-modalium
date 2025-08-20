@@ -14,6 +14,16 @@ npm install @infinitui/modalium
 yarn add @infinitui/modalium
 ```
 
+## 📦 Peer Dependencies
+
+Modalium relies on several external packages to function properly. Make sure these are installed in your project:
+
+```bash
+npm install react-native-safe-area-context react-native-gesture-handler react-native-reanimated expo-blur
+
+```
+⚠️ Note: Some of these libraries (like react-native-reanimated and react-native-gesture-handler) require additional setup. Please refer to their official documentation for installation and configuration steps (e.g. Babel plugin, GestureHandlerRootView, Reanimated plugin, etc.).
+
 ---
 
 ## 🧠 Usage Example
