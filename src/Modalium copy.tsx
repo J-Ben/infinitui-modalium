@@ -45,12 +45,11 @@ function Modalium({
     const translateY = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(0)).current;
     const shownRef = useRef(false);
-    const [shouldRender, setShouldRender] = useState(false);
+    const [shouldRender, setShouldRender] = useState(visible);
     const insets = useSafeAreaInsets();
 
     // Gestion bouton retour Android
     useEffect(() => {
-        console.log("is visible", visible);
         const handler = () => {
             if (visible && onRequestClose) {
                 onRequestClose();
@@ -62,32 +61,26 @@ function Modalium({
         return () => sub.remove();
     }, [visible, onRequestClose]);
 
-    // Synchrise shouldRender with visible prop
+    // Animation d'entrée/sortie
     useEffect(() => {
         if (visible) {
             setShouldRender(true);
-        }
-    }, [visible]);
-
-    // Animation d'entrée 
-    useEffect(() => {
-        if (shouldRender && visible) {
             Animated.parallel([
                 Animated.timing(animation, {
                     toValue: 1,
-                    duration,
+                    duration: duration,
                     useNativeDriver: true,
                     easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
                 }),
                 Animated.timing(translateY, {
                     toValue: 0,
-                    duration,
+                    duration: duration,
                     useNativeDriver: true,
                     easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
                 }),
                 Animated.timing(opacity, {
                     toValue: 1,
-                    duration,
+                    duration: duration,
                     useNativeDriver: true,
                     easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
                 }),
@@ -97,33 +90,27 @@ function Modalium({
                     onShow?.();
                 }
             });
-        }
-    }, [shouldRender, visible]);
-
-    // Animation de sortie
-    useEffect(() => {
-        if (!visible && shownRef.current) {
+        } else {
             Animated.parallel([
                 Animated.timing(animation, {
                     toValue: 0,
-                    duration,
+                    duration: duration,
                     useNativeDriver: true,
                     easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
                 }),
                 Animated.timing(opacity, {
                     toValue: 0,
-                    duration,
+                    duration: duration,
                     useNativeDriver: true,
                     easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
                 }),
             ]).start(() => {
                 shownRef.current = false;
-                setShouldRender(false);
                 onDismiss?.();
+                setShouldRender(false);
             });
         }
-    }, [visible]);
-
+    }, [visible, animation, translateY, opacity, duration, onShow, onDismiss]);
 
     // PanResponder pour swipe-to-close
     const panResponder = useRef(
