@@ -1,34 +1,29 @@
-/**
- * Modalium Component
- * A customizable modal component for React Native applications.
- * Supports various animations, presentation styles, and blur effects.
- * @version 1.0.0
- * @date 2025-08-08
- * @author Ben-Jamin MK
- * This component is designed to be flexible and reusable across different parts of the application.
- */
 import React, { useEffect, useRef, useState } from 'react';
 import {
     Animated,
-    BackHandler,
-    Easing,
+    Dimensions,
     PanResponder,
     Platform,
     StatusBar,
     StyleSheet,
     TouchableWithoutFeedback,
     View,
+    ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { ModaliumProps } from './types';
+import { animationRegistry } from './animations';
+import { normalizeAnimationType } from './utils/normalizeAnimationType';
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 function Modalium({
     visible,
     onRequestClose,
     onShow,
     onDismiss,
-    duration = 333,
+    duration = 600,
     children,
     transparent = true,
     animationType = 'fade',
@@ -40,100 +35,57 @@ function Modalium({
     useBlurOverlay = false,
     blurIntensity = 50,
     blurTint = 'default',
-}: ModaliumProps) {
+    circleBgColor = 'white',
+    circleScaleMax = 10,
+    circleSize = 100, // ✅ nouvelle prop
+}: ModaliumProps & {
+    circleBgColor?: string;
+    circleScaleMax?: number;
+    circleSize?: number;
+}) {
     const animation = useRef(new Animated.Value(0)).current;
     const translateY = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(0)).current;
+    const circleOpacity = useRef(new Animated.Value(1)).current;
     const shownRef = useRef(false);
     const [shouldRender, setShouldRender] = useState(false);
     const insets = useSafeAreaInsets();
 
-    // Gestion bouton retour Android
     useEffect(() => {
-        console.log("is visible", visible);
-        const handler = () => {
-            if (visible && onRequestClose) {
-                onRequestClose();
-                return true;
-            }
-            return false;
-        };
-        const sub = BackHandler.addEventListener('hardwareBackPress', handler);
-        return () => sub.remove();
-    }, [visible, onRequestClose]);
-
-    // Synchrise shouldRender with visible prop
-    useEffect(() => {
-        if (visible) {
-            setShouldRender(true);
-        }
+        if (visible) setShouldRender(true);
     }, [visible]);
 
-    // Animation d'entrée 
     useEffect(() => {
         if (shouldRender && visible) {
-            Animated.parallel([
-                Animated.timing(animation, {
-                    toValue: 1,
-                    duration,
-                    useNativeDriver: true,
-                    easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
-                }),
-                Animated.timing(translateY, {
-                    toValue: 0,
-                    duration,
-                    useNativeDriver: true,
-                    easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
-                }),
-                Animated.timing(opacity, {
-                    toValue: 1,
-                    duration,
-                    useNativeDriver: true,
-                    easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
-                }),
-            ]).start(() => {
+            const normalizedType = normalizeAnimationType(animationType);
+            const animationEntry = animationRegistry[normalizedType] || animationRegistry['fade'];
+            animationEntry.runEnter(animation, translateY, opacity, duration, () => {
                 if (!shownRef.current) {
                     shownRef.current = true;
                     onShow?.();
                 }
-            });
+            }, circleOpacity);
         }
     }, [shouldRender, visible]);
 
-    // Animation de sortie
     useEffect(() => {
         if (!visible && shownRef.current) {
-            Animated.parallel([
-                Animated.timing(animation, {
-                    toValue: 0,
-                    duration,
-                    useNativeDriver: true,
-                    easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
-                }),
-                Animated.timing(opacity, {
-                    toValue: 0,
-                    duration,
-                    useNativeDriver: true,
-                    easing: Easing.bezier(0.42, 0.0, 0.58, 1.0),
-                }),
-            ]).start(() => {
+            const normalizedType = normalizeAnimationType(animationType);
+            const animationEntry = animationRegistry[normalizedType] || animationRegistry['fade'];
+            animationEntry.runExit(animation, opacity, duration, () => {
                 shownRef.current = false;
                 setShouldRender(false);
                 onDismiss?.();
-            });
+            }, circleOpacity);
         }
     }, [visible]);
 
-
-    // PanResponder pour swipe-to-close
     const panResponder = useRef(
         PanResponder.create({
             onMoveShouldSetPanResponder: (_, gestureState) =>
                 swipeToClose && gestureState.dy > 10,
             onPanResponderMove: (_, gestureState) => {
-                if (gestureState.dy > 0) {
-                    translateY.setValue(gestureState.dy);
-                }
+                if (gestureState.dy > 0) translateY.setValue(gestureState.dy);
             },
             onPanResponderRelease: (_, gestureState) => {
                 if (gestureState.dy > 100 && onRequestClose) {
@@ -165,13 +117,6 @@ function Modalium({
         marginTop: Platform.OS === 'android' ? -insets.top : 0,
     };
 
-    const modalStyles = [
-        styles.baseModal,
-        isFullScreenLike && fullScreenStyleWithSafeArea,
-        presentationStyle === 'formSheet' && { ...styles.formSheet, top: insets.top },
-        presentationStyle === 'pageSheet' && styles.pageSheet,
-    ];
-
     const translateYSlide = animation.interpolate({
         inputRange: [0, 1],
         outputRange: [duration, 0],
@@ -179,19 +124,43 @@ function Modalium({
 
     const combinedTranslateY = Animated.add(translateYSlide, translateY);
 
-    const animatedStyle = {
-        opacity: opacity,
+    const scale = animation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, circleScaleMax],
+    });
+
+    const circleStyle: Animated.WithAnimatedObject<ViewStyle> = {
+        position: 'absolute',
+        top: screenHeight / 2 - circleSize / 2,
+        left: screenWidth / 2 - circleSize / 2,
+        width: circleSize,
+        height: circleSize,
+        backgroundColor: circleBgColor,
+        borderRadius: circleSize / 2,
+        transform: [{ scale }],
+        opacity: circleOpacity,
+    };
+
+
+
+    const contentStyle: Animated.WithAnimatedObject<ViewStyle> = {
+        opacity,
         transform:
             animationType === 'slide'
                 ? [{ translateY: combinedTranslateY }]
-                : animationType === 'scale'
-                    ? [{ scale: animation }]
-                    : [],
+                : [],
     };
+
+    const modalStyles = [
+        styles.baseModal,
+        isFullScreenLike && fullScreenStyleWithSafeArea,
+        presentationStyle === 'formSheet' && { ...styles.formSheet, top: insets.top },
+        presentationStyle === 'pageSheet' && styles.pageSheet,
+    ];
 
     const modalContent = (
         <Animated.View
-            style={[...modalStyles, animatedStyle]}
+            style={[...modalStyles, contentStyle]}
             {...(swipeToClose ? panResponder.panHandlers : {})}
         >
             {children}
@@ -204,36 +173,20 @@ function Modalium({
     return (
         <TouchableWithoutFeedback
             onPress={onRequestClose}
-            disabled={!blockBackgroundInteraction
-            }
+            disabled={!blockBackgroundInteraction}
         >
-            {
-                useBlurOverlay ? (
-                    <BlurView
-                        intensity={blurIntensity}
-                        tint={blurTint}
-                        style={overlayStyle}
-                        experimentalBlurMethod="dimezisBlurView"
-                    >
-                        <StatusBar
-                            animated
-                            backgroundColor="transparent"
-                            barStyle={barStyle}
-                            translucent={statusBarTranslucent}
-                        />
-                        {modalContent}
-                    </BlurView>
-                ) : (
-                    <View style={overlayStyle}>
-                        <StatusBar
-                            animated
-                            backgroundColor={statusBarBgColor}
-                            barStyle={barStyle}
-                            translucent={statusBarTranslucent}
-                        />
-                        {modalContent}
-                    </View>
+            <View style={overlayStyle}>
+                <StatusBar
+                    animated
+                    backgroundColor={statusBarBgColor}
+                    barStyle={barStyle}
+                    translucent={statusBarTranslucent}
+                />
+                {animationType === 'centerCircleZoom' && (
+                    <Animated.View style={circleStyle} />
                 )}
+                {modalContent}
+            </View>
         </TouchableWithoutFeedback>
     );
 }

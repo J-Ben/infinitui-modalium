@@ -1,6 +1,15 @@
 import * as React from 'react';
+import { Animated } from 'react-native/Libraries/Animated/Animated';
 
-export type AnimationType = 'fade' | 'slide' | 'scale';
+export type AnimationType = | 'fade'
+  | 'slide'
+  | 'scale'
+  | 'centerCircleZoom'
+  | 'zoom'
+  | 'waouh'
+  | 'vibrate'
+  | 'dancing'
+  | 'centercirclezoom';
 export type PresentationStyle = 'fullScreen' | 'pageSheet' | 'formSheet' | 'overFullScreen';
 export type BlurTint = 'light' | 'dark' | 'default';
 
@@ -22,3 +31,24 @@ export interface ModaliumProps {
   blurIntensity?: number;
   blurTint?: BlurTint;
 }
+export type ModalAnimation = {
+  runEnter: (
+    animation: Animated.Value,
+    translateY: Animated.Value,
+    opacity: Animated.Value,
+    duration: number,
+    onEnd?: () => void,
+    circleOpacity?: Animated.Value // ✅ ajouté ici
+  ) => void;
+  runExit: (
+    animation: Animated.Value,
+    opacity: Animated.Value,
+    duration: number,
+    onEnd?: () => void,
+    circleOpacity?: Animated.Value // ✅ ajouté ici
+  ) => void;
+};
+
+export type AnimationRegistry = {
+  [key in AnimationType]: ModalAnimation;
+};
