@@ -30,6 +30,11 @@ export interface ModaliumProps {
   useBlurOverlay?: boolean;
   blurIntensity?: number;
   blurTint?: BlurTint;
+  circleBgColor?: string;
+  circleScaleMax?: number;
+  circleSize?: number;
+  startX?: number;
+  startY?: number;
 }
 export type ModalAnimation = {
   runEnter: (

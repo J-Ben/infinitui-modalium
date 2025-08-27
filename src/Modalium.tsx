@@ -38,6 +38,8 @@ function Modalium({
     circleBgColor = 'white',
     circleScaleMax = 10,
     circleSize = 100, // ✅ nouvelle prop
+    startX,
+    startY,
 }: ModaliumProps & {
     circleBgColor?: string;
     circleScaleMax?: number;
@@ -131,8 +133,9 @@ function Modalium({
 
     const circleStyle: Animated.WithAnimatedObject<ViewStyle> = {
         position: 'absolute',
-        top: screenHeight / 2 - circleSize / 2,
-        left: screenWidth / 2 - circleSize / 2,
+        top: (startY ?? screenHeight / 2) - circleSize / 2,
+        left: (startX ?? screenWidth / 2) - circleSize / 2,
+
         width: circleSize,
         height: circleSize,
         backgroundColor: circleBgColor,
@@ -182,7 +185,7 @@ function Modalium({
                     barStyle={barStyle}
                     translucent={statusBarTranslucent}
                 />
-                {animationType === 'centerCircleZoom' && (
+                {['centerCircleZoom', 'parentZoom'].includes(animationType) && (
                     <Animated.View style={circleStyle} />
                 )}
                 {modalContent}

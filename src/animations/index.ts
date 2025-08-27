@@ -1,6 +1,8 @@
 import { ModalAnimation } from '../types';
 import { runSlideEnter, runSlideExit } from './slide';
 import { runCenterCircleZoomEnter, runCenterCircleZoomExit } from './centerCircleZoom';
+import { runParentZoomEnter, runParentZoomExit } from './parentZoom';
+
 /*
 import { runFadeEnter, runFadeExit } from './fade';
 import { runCenterZoomEnter, runCenterZoomExit } from './centerZoom';
@@ -17,7 +19,11 @@ export const animationRegistry: Record<string, ModalAnimation> = {
     centercirclezoom: {
         runEnter: runCenterCircleZoomEnter,
         runExit: runCenterCircleZoomExit,
-    }
+    },
+    parentzoom: {
+        runEnter: runParentZoomEnter,
+        runExit: runParentZoomExit,
+    },
     /*zoom: {
       runEnter: runZoomEnter,
       runExit: runZoomExit,
