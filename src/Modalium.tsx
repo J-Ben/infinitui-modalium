@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
     Animated,
     Dimensions,
-    PanResponder,
     Platform,
     StatusBar,
     StyleSheet,
@@ -11,10 +10,10 @@ import {
     ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BlurView } from 'expo-blur';
 import { ModaliumProps } from './types';
 import { animationRegistry } from './animations';
 import { normalizeAnimationType } from './utils/normalizeAnimationType';
+import { useSwipeToClose } from './hooks/useSwipeToClose';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -37,7 +36,7 @@ function Modalium({
     blurTint = 'default',
     circleBgColor = 'white',
     circleScaleMax = 10,
-    circleSize = 100, // ✅ nouvelle prop
+    circleSize = 100,
     startX,
     startY,
 }: ModaliumProps & {
@@ -46,22 +45,30 @@ function Modalium({
     circleSize?: number;
 }) {
     const animation = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(0)).current;
     const circleOpacity = useRef(new Animated.Value(1)).current;
     const shownRef = useRef(false);
     const [shouldRender, setShouldRender] = useState(false);
     const insets = useSafeAreaInsets();
 
+    // ✅ Hook swipeToClose
+    const { panHandlers, translate } = useSwipeToClose({
+        enabled: swipeToClose,
+        onClose: onRequestClose,
+        threshold: 100,
+    });
+
+    // Rendu conditionnel
     useEffect(() => {
         if (visible) setShouldRender(true);
     }, [visible]);
 
+    // Animation d'entrée
     useEffect(() => {
         if (shouldRender && visible) {
             const normalizedType = normalizeAnimationType(animationType);
             const animationEntry = animationRegistry[normalizedType] || animationRegistry['fade'];
-            animationEntry.runEnter(animation, translateY, opacity, duration, () => {
+            animationEntry.runEnter(animation, translate, opacity, duration, () => {
                 if (!shownRef.current) {
                     shownRef.current = true;
                     onShow?.();
@@ -70,6 +77,7 @@ function Modalium({
         }
     }, [shouldRender, visible]);
 
+    // Animation de sortie
     useEffect(() => {
         if (!visible && shownRef.current) {
             const normalizedType = normalizeAnimationType(animationType);
@@ -81,26 +89,6 @@ function Modalium({
             }, circleOpacity);
         }
     }, [visible]);
-
-    const panResponder = useRef(
-        PanResponder.create({
-            onMoveShouldSetPanResponder: (_, gestureState) =>
-                swipeToClose && gestureState.dy > 10,
-            onPanResponderMove: (_, gestureState) => {
-                if (gestureState.dy > 0) translateY.setValue(gestureState.dy);
-            },
-            onPanResponderRelease: (_, gestureState) => {
-                if (gestureState.dy > 100 && onRequestClose) {
-                    onRequestClose();
-                } else {
-                    Animated.spring(translateY, {
-                        toValue: 0,
-                        useNativeDriver: true,
-                    }).start();
-                }
-            },
-        })
-    ).current;
 
     if (!shouldRender) return null;
 
@@ -124,7 +112,7 @@ function Modalium({
         outputRange: [duration, 0],
     });
 
-    const combinedTranslateY = Animated.add(translateYSlide, translateY);
+    const combinedTranslateY = Animated.add(translateYSlide, translate);
 
     const scale = animation.interpolate({
         inputRange: [0, 1],
@@ -135,7 +123,6 @@ function Modalium({
         position: 'absolute',
         top: (startY ?? screenHeight / 2) - circleSize / 2,
         left: (startX ?? screenWidth / 2) - circleSize / 2,
-
         width: circleSize,
         height: circleSize,
         backgroundColor: circleBgColor,
@@ -143,8 +130,6 @@ function Modalium({
         transform: [{ scale }],
         opacity: circleOpacity,
     };
-
-
 
     const contentStyle: Animated.WithAnimatedObject<ViewStyle> = {
         opacity,
@@ -164,7 +149,7 @@ function Modalium({
     const modalContent = (
         <Animated.View
             style={[...modalStyles, contentStyle]}
-            {...(swipeToClose ? panResponder.panHandlers : {})}
+            {...(swipeToClose ? panHandlers : {})}
         >
             {children}
         </Animated.View>

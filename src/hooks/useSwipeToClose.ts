@@ -1,25 +1,63 @@
 import { useRef } from 'react';
-import { Animated, PanResponder } from 'react-native';
+import { Animated, PanResponder, PanResponderGestureState } from 'react-native';
 
-export const useSwipeToClose = (
-  enabled: boolean,
-  translateY: Animated.Value,
-  onRequestClose?: () => void
-) => {
+type SwipeDirection = 'down' | 'up' | 'left' | 'right';
+
+type Options = {
+  enabled?: boolean;
+  onClose?: () => void;
+  threshold?: number;
+  direction?: SwipeDirection;
+};
+
+function getAxis(direction: SwipeDirection) {
+  return direction === 'left' || direction === 'right' ? 'x' : 'y';
+}
+
+function getDelta(direction: SwipeDirection, gesture: PanResponderGestureState) {
+  switch (direction) {
+    case 'down':
+      return gesture.dy;
+    case 'up':
+      return -gesture.dy;
+    case 'left':
+      return -gesture.dx;
+    case 'right':
+      return gesture.dx;
+  }
+}
+
+export function useSwipeToClose({
+  enabled = true,
+  onClose,
+  threshold = 100,
+  direction = 'down',
+}: Options) {
+  const axis = getAxis(direction);
+  const translate = useRef(new Animated.Value(0)).current;
+
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) =>
-        enabled && gestureState.dy > 10,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        if (!enabled) return false;
+
+        const delta = getDelta(direction, gestureState);
+        // seuil minimal pour commencer à prendre la main
+        return delta > 10;
+      },
       onPanResponderMove: (_, gestureState) => {
-        if (gestureState.dy > 0) {
-          translateY.setValue(gestureState.dy);
+        const delta = getDelta(direction, gestureState);
+        if (delta > 0) {
+          translate.setValue(delta);
         }
       },
       onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dy > 100 && onRequestClose) {
-          onRequestClose();
+        const delta = getDelta(direction, gestureState);
+
+        if (delta > threshold) {
+          onClose?.();
         } else {
-          Animated.spring(translateY, {
+          Animated.spring(translate, {
             toValue: 0,
             useNativeDriver: true,
           }).start();
@@ -28,5 +66,9 @@ export const useSwipeToClose = (
     })
   ).current;
 
-  return panResponder;
-};
+  return {
+    panHandlers: panResponder.panHandlers,
+    translate,
+    axis, // 'x' ou 'y', pour composer avec d'autres anims
+  };
+}

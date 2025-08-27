@@ -1,6 +1,6 @@
 {
     "name": "@infinitui/modalium",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "description": "A customizable modal component for React Native applications with animations and blur effects",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
