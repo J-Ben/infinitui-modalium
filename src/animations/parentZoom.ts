@@ -3,6 +3,9 @@ import { Animated, Easing } from 'react-native';
 /**
  * Animation d'entrée : la bulle part du point du parent (ex: bouton) et s'étend.
  */
+
+
+
 export const runParentZoomEnter = (
   animation: Animated.Value,
   translateY: Animated.Value,
@@ -16,7 +19,7 @@ export const runParentZoomEnter = (
   circleOpacity?.setValue(1);
 
   Animated.sequence([
-    // La bulle grandit
+    // 1. La bulle scale
     Animated.timing(animation, {
       toValue: 1,
       duration,
@@ -24,19 +27,25 @@ export const runParentZoomEnter = (
       easing: Easing.out(Easing.exp),
     }),
 
-    // Le contenu fade in
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: duration * 0.4,
-      useNativeDriver: true,
-      easing: Easing.out(Easing.quad),
-    }),
+    // 2. Fade out du cercle + fade in du contenu en même temps
+    Animated.parallel([
+      Animated.timing(circleOpacity!, {
+        toValue: 0,
+        duration: duration * 0.3,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.quad),
+      }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: duration * 0.3,
+        useNativeDriver: true,
+        easing: Easing.out(Easing.quad),
+      }),
+    ]),
   ]).start(() => onEnd?.());
 };
 
-/**
- * Animation de sortie : le contenu disparaît puis la bulle se rétracte.
- */
+
 export const runParentZoomExit = (
   animation: Animated.Value,
   opacity: Animated.Value,
@@ -46,10 +55,10 @@ export const runParentZoomExit = (
 ) => {
   circleOpacity?.setValue(0);
   opacity.setValue(1);
-  animation.setValue(1); // On part du scale max
+  animation.setValue(1);
 
-  Animated.sequence([
-    // 1. Fade out du contenu
+  Animated.parallel([
+    // 1. Le contenu fade out
     Animated.timing(opacity, {
       toValue: 0,
       duration: duration * 0.3,
@@ -57,14 +66,15 @@ export const runParentZoomExit = (
       easing: Easing.in(Easing.quad),
     }),
 
-    // 2. Affichage de la bulle à scale max
+    // 2. La bulle réapparaît
     Animated.timing(circleOpacity!, {
       toValue: 1,
-      duration: 1,
+      duration: duration * 0.3,
       useNativeDriver: true,
+      easing: Easing.in(Easing.exp),
     }),
 
-    // 3. La bulle se scale vers 0
+    // 3. La bulle scale down
     Animated.timing(animation, {
       toValue: 0,
       duration: duration * 0.7,

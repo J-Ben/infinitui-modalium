@@ -35,6 +35,9 @@ export interface ModaliumProps {
   circleSize?: number;
   startX?: number;
   startY?: number;
+  statusBarColor?: string;        
+  statusBarOpacity?: number;     
+
 }
 export type ModalAnimation = {
   runEnter: (

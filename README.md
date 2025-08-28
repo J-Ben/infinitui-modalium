@@ -4,6 +4,10 @@
 
 Create smooth, elegant, and highly customizable modals with animations, blur effects, and multiple presentation styles. Fully compatible with React Native & Expo.
 
+--- 
+
+![Démo Modalium](./screenshots/bg.gif)
+
 ---
 
 ## 🚀 Installation
@@ -14,15 +18,25 @@ npm install @infinitui/modalium
 yarn add @infinitui/modalium
 ```
 
-## 📦 Peer Dependencies
+---
 
-Modalium relies on several external packages to function properly. Make sure these are installed in your project:
+## 📦 Required Peer Dependencies
+
+Modalium relies on several external packages to function properly. You **must** install these in your project:
 
 ```bash
 npm install react-native-safe-area-context react-native-gesture-handler react-native-reanimated expo-blur
-
 ```
-⚠️ Note: Some of these libraries (like react-native-reanimated and react-native-gesture-handler) require additional setup. Please refer to their official documentation for installation and configuration steps (e.g. Babel plugin, GestureHandlerRootView, Reanimated plugin, etc.).
+
+⚠️ **Important Setup Notes:**
+
+Some of these libraries require additional configuration:
+
+- `react-native-reanimated`: Add the Babel plugin and enable Reanimated in your `babel.config.js`
+- `react-native-gesture-handler`: Wrap your app in `GestureHandlerRootView`
+- `expo-blur`: Works out of the box with Expo, but requires `expo-modules-core` in bare projects
+
+Refer to each library’s documentation for full setup instructions.
 
 ---
 
@@ -48,8 +62,10 @@ export default function App() {
         useBlurOverlay={true}
         blurIntensity={80}
         swipeToClose={true}
+        modalBgColor="#ffffff"
+        statusBarTranslucent={true}
       >
-        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 12 }}>
+        <View style={{ backgroundColor: '#ffffff', padding: 20, borderRadius: 12 }}>
           <Text style={{ fontSize: 18 }}>Hello from Modalium 👋</Text>
           <Button title="Close" onPress={() => setVisible(false)} />
         </View>
@@ -72,7 +88,7 @@ export default function App() {
 | `duration`                  | `number`                         | `333`           | Animation duration in ms |
 | `children`                  | `React.ReactNode`                | —               | Modal content |
 | `transparent`               | `boolean`                        | `true`          | Use semi-transparent background |
-| `animationType`             | `'fade' | 'slide' | 'scale'`     | `'fade'`        | Animation style |
+| `animationType`             | `'fade' | 'slide' | 'scale' | 'centerCircleZoom' | 'parentZoom'` | `'fade'` | Animation style |
 | `statusBarTranslucent`      | `boolean`                        | `false`         | Make status bar translucent |
 | `presentationStyle`         | `'fullScreen' | 'overFullScreen' | 'formSheet' | 'pageSheet'` | `'overFullScreen'` | Modal layout style |
 | `blockBackgroundInteraction`| `boolean`                        | `true`          | Prevent interaction with background |
@@ -81,16 +97,30 @@ export default function App() {
 | `useBlurOverlay`            | `boolean`                        | `false`         | Enable blur background |
 | `blurIntensity`             | `number`                         | `50`            | Blur intensity |
 | `blurTint`                  | `'light' | 'dark' | 'default'`   | `'default'`     | Blur tint color |
+| `circleBgColor`             | `string`                         | `'white'`       | Background color of animated circle |
+| `circleScaleMax`            | `number`                         | `10`            | Maximum scale of the circle animation |
+| `circleSize`                | `number`                         | `100`           | Initial size of the circle |
+| `startX` / `startY`         | `number`                         | —               | Coordinates for circle origin |
+| `modalBgColor`              | `string`                         | —               | Background color of modal content container |
 
 ---
 
 ## ✅ Compatibility
 
-- React Native
-- Expo
-- Android & iOS
-- `react-native-safe-area-context`
-- `expo-blur`
+- ✅ React Native
+- ✅ Expo
+- ✅ Android & iOS
+- ✅ Works with `react-native-safe-area-context`, `expo-blur`, `react-native-reanimated`, and `react-native-gesture-handler`
+
+---
+
+## 🤝 Contributing
+
+Modalium is actively evolving and I’m looking for contributors to help improve it!
+
+If you love animation, UI polish, or just want to help build beautiful React Native components — fork the repo, open a PR, or start a discussion.
+
+👉 [GitHub Repository](https://github.com/J-Ben/infinitui-modalium)
 
 ---
 
@@ -98,4 +128,4 @@ export default function App() {
 
 **Ben-Jamin MK**  
 Creator of modern UI components for React Native.  
-[GitHub](https://github.com/benjaminmk)
+[GitHub](https://github.com/J-Ben)

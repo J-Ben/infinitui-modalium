@@ -1,56 +1,61 @@
 {
-    "name": "@infinitui/modalium",
-    "version": "1.0.5",
-    "description": "A customizable modal component for React Native applications with animations and blur effects",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "files": [
-        "lib/",
-        "README.md"
-    ],
-    "scripts": {
-        "build": "tsc -p tsconfig.build.json",
-        "prepublishOnly": "npm run build",
-        "clean": "rmdir /s /q lib",
-        "rebuild": "npm run clean && npm run build"
+  "name": "@infinitui/modalium",
+  "version": "1.0.6",
+  "description": "A customizable modal component for React Native applications with animations, blur effects, and dynamic entry points",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf lib",
+    "rebuild": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "react-native",
+    "modal",
+    "expo",
+    "animation",
+    "blur",
+    "typescript",
+    "ui",
+    "infinitui",
+    "circle",
+    "slide",
+    "modalium"
+  ],
+  "author": "Ben-Jamin MK",
+  "license": "MIT",
+  "peerDependencies": {
+    "expo-blur": "^14.1.5",
+    "react": ">=16.8.0",
+    "react-native": ">=0.60.0",
+    "react-native-gesture-handler": ">=2.0.0",
+    "react-native-reanimated": ">=2.0.0",
+    "react-native-safe-area-context": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.10",
+    "@types/react-native": "^0.72.0",
+    "typescript": "^4.9.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/J-Ben/infinitui-modalium.git"
+  },
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
     },
-    "keywords": [
-        "react-native",
-        "modal",
-        "expo",
-        "animation",
-        "blur",
-        "typescript"
-    ],
-    "author": "Ben-Jamin MK",
-    "license": "MIT",
-    "peerDependencies": {
-        "expo-blur": ">=12.0.0",
-        "react": ">=16.8.0",
-        "react-native": ">=0.60.0",
-        "react-native-safe-area-context": ">=3.0.0",
-        "react-native-gesture-handler": ">=2.0.0",
-        "react-native-reanimated": ">=2.0.0"
-    },
-    "devDependencies": {
-        "@types/react": "^19.1.10",
-        "@types/react-native": "^0.72.0",
-        "typescript": "^4.9.5"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/J-Ben/infinitui-modalium.git"
-    },
-    "exports": {
-        ".": {
-            "import": "./lib/index.js",
-            "require": "./lib/index.js",
-            "types": "./lib/index.d.ts"
-        },
-        "./package.json": "./package.json"
-    },
-    "homepage": "https://github.com/J-Ben/infinitui-modalium#readme",
-    "engines": {
-        "node": ">=14"
-    }
+    "./package.json": "./package.json"
+  },
+  "homepage": "https://github.com/J-Ben/infinitui-modalium#readme",
+  "engines": {
+    "node": ">=14"
+  }
 }
