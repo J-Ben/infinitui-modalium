@@ -5,11 +5,15 @@
 Create smooth, elegant, and highly customizable modals with animations, blur effects, and multiple presentation styles. Fully compatible with React Native & Expo.
 
 --- 
+## 🎬 Demo
 
-![Démo Modalium](https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif?updatedAt=1757073843326)
+Experience Modalium in action:
 
----
-<img src="https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif?updatedAt=1757073843326" alt="Démo Modalium" width="600" />
+[▶️ Watch the animated demo](https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif)
+
+Or see it below:
+
+<img src="https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif" alt="Démo Modalium" width="600" />
 
 ---
 
