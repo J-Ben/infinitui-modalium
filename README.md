@@ -9,11 +9,11 @@ Create smooth, elegant, and highly customizable modals with animations, blur eff
 
 Experience Modalium in action:
 
-[▶️ Watch the animated demo](https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif)
+[▶️ Watch the animated demo](https://ik.imagekit.io/xkf4n7joe/dm-modalium.gif)
 
 Or see it below:
 
-<img src="https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif" alt="Démo Modalium" width="600" />
+<img src="https://ik.imagekit.io/xkf4n7joe/dm-modalium.gif" alt="Démo Modalium" width="350" />
 
 ---
 
