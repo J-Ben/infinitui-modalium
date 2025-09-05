@@ -20,12 +20,9 @@
     "skipLibCheck": true,
     "baseUrl": "src",
     "paths": {
-      // "@animations": [
-      //   "animations/index"
-      // ],
-      // "@animations/*": [
-      //   "animations/*"
-      // ]
+      "@/*": [
+        "./*"
+      ]
     }
   },
   "include": [
