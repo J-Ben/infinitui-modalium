@@ -8,7 +8,7 @@ Create smooth, elegant, and highly customizable modals with animations, blur eff
 
 ![Démo Modalium](https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif?updatedAt=1757073843326)
 
-
+---
 <img src="https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif?updatedAt=1757073843326" alt="Démo Modalium" width="600" />
 
 ---
