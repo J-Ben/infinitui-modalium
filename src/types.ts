@@ -10,6 +10,8 @@ export type AnimationType = | 'fade'
   | 'vibrate'
   | 'dancing'
   | 'centercirclezoom';
+
+
 export type PresentationStyle = 'fullScreen' | 'pageSheet' | 'formSheet' | 'overFullScreen';
 export type BlurTint = 'light' | 'dark' | 'default';
 
@@ -35,8 +37,8 @@ export interface ModaliumProps {
   circleSize?: number;
   startX?: number;
   startY?: number;
-  statusBarColor?: string;        
-  statusBarOpacity?: number;     
+  statusBarColor?: string;
+  statusBarOpacity?: number;
 
 }
 export type ModalAnimation = {
@@ -56,6 +58,26 @@ export type ModalAnimation = {
     circleOpacity?: Animated.Value // ✅ ajouté ici
   ) => void;
 };
+
+
+export interface WaouhAnimation {
+  runEnter: (
+    translateX: Animated.Value,
+    scale: Animated.Value,
+    rotate: Animated.Value,
+    opacity: Animated.Value,
+    duration: number,
+    onEnd?: () => void
+  ) => void;
+  runExit: (
+    translateX: Animated.Value,
+    scale: Animated.Value,
+    rotate: Animated.Value,
+    opacity: Animated.Value,
+    duration: number,
+    onEnd?: () => void
+  ) => void;
+}
 
 export type AnimationRegistry = {
   [key in AnimationType]: ModalAnimation;
