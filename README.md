@@ -6,9 +6,7 @@ Create smooth, elegant, and highly customizable modals with animations, blur eff
 
 --- 
 
-![Démo Modalium]
-
-<iframe width="560" height="315" src="https://imagekit.io/player/embed/xkf4n7joe/bg.mp4?updatedAt=1757073270302&thumbnail=https%3A%2F%2Fik.imagekit.io%2Fxkf4n7joe%2Fbg.mp4%2Fik-thumbnail.jpg%3FupdatedAt%3D1757073270302&updatedAt=1757073270302" title="ImageKit video player" frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"> </iframe>
+![Démo Modalium](https://imagekit.io/player/embed/xkf4n7joe/bg.mp4?updatedAt=1757073270302&thumbnail=https%3A%2F%2Fik.imagekit.io%2Fxkf4n7joe%2Fbg.mp4%2Fik-thumbnail.jpg%3FupdatedAt%3D1757073270302&updatedAt=1757073270302)
 
 ---
 
