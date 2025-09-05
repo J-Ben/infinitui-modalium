@@ -6,7 +6,10 @@ Create smooth, elegant, and highly customizable modals with animations, blur eff
 
 --- 
 
-![Démo Modalium](https://imagekit.io/player/embed/xkf4n7joe/bg.mp4?updatedAt=1757073270302&thumbnail=https%3A%2F%2Fik.imagekit.io%2Fxkf4n7joe%2Fbg.mp4%2Fik-thumbnail.jpg%3FupdatedAt%3D1757073270302&updatedAt=1757073270302)
+![Démo Modalium](https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif?updatedAt=1757073843326)
+
+
+<img src="https://ik.imagekit.io/xkf4n7joe/bg-modalium.gif?updatedAt=1757073843326" alt="Démo Modalium" width="600" />
 
 ---
 
